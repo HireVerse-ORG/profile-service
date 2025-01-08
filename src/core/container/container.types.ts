@@ -3,7 +3,8 @@
  * We use symbols as identifiers but you can also use classes and or string literals.
  */
 export default  {
-    SkillController: Symbol('SkillController'),
-    SkillService: Symbol('SkillService'),
-    SkillRepository: Symbol('SkillRepository'),
+    SeekerProfileController: Symbol('SeekerProfileController'),
+    SeekerProfileGrpcController: Symbol('SeekerProfileGrpcController'),
+    SeekerProfileService: Symbol('SeekerProfileService'),
+    SeekerProfileRepository: Symbol('SeekerProfileRepository'),
 };
