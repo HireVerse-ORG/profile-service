@@ -1,7 +1,7 @@
 import { inject, injectable } from "inversify";
 import containerTypes from "../../../../core/container/container.types";
 import { ISeekerProfileService } from "../interface/seeker.profile.service.interface";
-import { json, Request, Response } from 'express';
+import { Request, Response } from 'express';
 import { AuthRequest } from '@hireverse/service-common/dist/token/user/userRequest';
 import asyncWrapper from '@hireverse/service-common/dist/utils/asyncWrapper';
 import { BaseController } from "../../../../core/base.controller";
@@ -20,7 +20,7 @@ export class SeekerProfileController extends BaseController {
             profileUsername = await this.seekerProfileService.generateUniqueProfileUsername(profileName);
         }
         await this.seekerProfileService.createProfile({profileName, userId, profileUsername})
-        return res.sendStatus(200)
+        return res.sendStatus(201)
     });
 
     /**

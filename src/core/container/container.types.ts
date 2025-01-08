@@ -7,4 +7,7 @@ export default  {
     SeekerProfileGrpcController: Symbol('SeekerProfileGrpcController'),
     SeekerProfileService: Symbol('SeekerProfileService'),
     SeekerProfileRepository: Symbol('SeekerProfileRepository'),
+    SeekerEducationController: Symbol('SeekerEducationController'),
+    SeekerEducationService: Symbol('SeekerEducationService'),
+    SeekerEducationRepository: Symbol('SeekerEducationRepository'),
 };
