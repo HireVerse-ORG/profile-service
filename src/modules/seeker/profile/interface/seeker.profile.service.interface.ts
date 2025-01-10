@@ -9,4 +9,6 @@ export interface ISeekerProfileService {
     updateProfileByUserId(id: string, data: Partial<SeekerProfileDTO>): Promise<ISeekerProfile>;
     generateUniqueProfileUsername(fullName: string): Promise<string>;
     usernameExist(username: string, excludedUserId?: string): Promise<boolean>;
+    addSkill(skillId: string, userId: string): Promise<boolean>;
+    removeSkill(skillId: string, userId: string): Promise<boolean>;
 }

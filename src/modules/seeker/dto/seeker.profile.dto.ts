@@ -11,6 +11,7 @@ export interface SeekerProfileDTO {
     profileUsername: string;
     image: string;
     coverImage: string;
+    skills: string[];
 }
 
 export interface SeekerProfileCreateDTO {

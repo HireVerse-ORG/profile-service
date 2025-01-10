@@ -86,4 +86,38 @@ export class SeekerProfileService implements ISeekerProfileService {
         const existingUser = await this.seekerProfileRepo.findOne(query);
         return !!existingUser;  
     }
+
+    async addSkill(skillId: string, userId: string): Promise<boolean> {
+        const profile = await this.getProfileByUserId(userId);
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+
+        if(!profile.skills.includes(skillId)){
+            profile.skills.push(skillId);
+            await profile.save();
+            return true;
+        }
+
+        return false;
+    }
+
+    async removeSkill(skillId: string, userId: string): Promise<boolean> {
+        const profile = await this.getProfileByUserId(userId);
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+    
+        const skillIndex = profile.skills.indexOf(skillId);
+    
+        if (skillIndex === -1) {
+            return false;
+        }
+    
+        profile.skills.splice(skillIndex, 1);
+    
+        await profile.save(); 
+        return true; 
+    }
+    
 }

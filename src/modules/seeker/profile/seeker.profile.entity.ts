@@ -14,6 +14,7 @@ export interface ISeekerProfile extends Document {
     profileUsername: string;
     image: string;
     coverImage: string;
+    skills: string[];
     createdAt: Date;
     updatedAt: Date;
 }
@@ -32,6 +33,7 @@ const SeekerProfileSchema: Schema = new Schema(
         profileUsername: { type: String, required: true, unique: true },
         image: { type: String },
         coverImage: { type: String, default: null },
+        skills: { type: [String], default: [] },
     },
     {
         timestamps: true,

@@ -12,6 +12,8 @@ const router = Router();
 router.post("/", controller.createProfile);
 router.get("/", allowedRoles("seeker"), controller.getProfile);
 router.put("/", allowedRoles("seeker"), controller.updateProfile);
+router.put("/skills", allowedRoles("seeker"), controller.updateProfileSkills);
+router.delete("/skills/:id", allowedRoles("seeker"), controller.removeProfileSkill);
 
 router.get("/username-exist/:username", controller.checkUsernameExist);
 router.get("/:userName", controller.getProfileFromUsername);
