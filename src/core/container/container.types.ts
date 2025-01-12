@@ -17,7 +17,12 @@ export default  {
     SeekerPortfolioService: Symbol('SeekerPortfolioService'),
     SeekerPortfolioRepository: Symbol('SeekerPortfolioRepository'),
 
-
+    // company
+    CompanyProfileController: Symbol('CompanyProfileController'),
+    CompanyProfileGrpcController: Symbol('CompanyProfileGrpcController'),
+    CompanyProfileService: Symbol('CompanyProfileService'),
+    CompanyProfileRepository: Symbol('CompanyProfileRepository'),
+    
     // external
     JobSkillService: Symbol('JobSkillService'),
 
