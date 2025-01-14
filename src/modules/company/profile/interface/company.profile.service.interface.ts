@@ -9,4 +9,6 @@ export interface ICompanyProfileService {
     profileExist(companyId: string, excludedUserId?: string): Promise<boolean>;
     acceptProfile(companyId: string): Promise<void>;
     rejectProfile(companyId: string): Promise<void>;
+    addWorkplaceImage(image: string, userId: string): Promise<boolean>;
+    removeWorkplaceImage(image: string, userId: string): Promise<boolean>;
 }

@@ -19,17 +19,18 @@ export interface ICompanyProfile extends Document {
     image: string;
     founded: Date;
     industry: string;
-    companyType: string; 
-    email: string; 
-    phone: string; 
-    website: string; 
-    socialLinks: { 
+    companyType: string;
+    email: string;
+    phone: string;
+    website: string;
+    socialLinks: {
         linkedin?: string;
         twitter?: string;
         facebook?: string;
         instagram?: string;
     };
     employeeCount: number;
+    workplaceImages: string[]; 
     status: CompanyProfileStatus;
     createdAt: Date;
     updatedAt: Date;
@@ -46,7 +47,7 @@ const CompanyProfileSchema: Schema = new Schema(
         },
         bio: { type: String, required: false },
         image: { type: String, required: false },
-        founded: { type: Date, required: false }, 
+        founded: { type: Date, required: false },
         industry: { type: String, required: true },
         companyType: { type: String, required: true },
         email: { type: String, required: true },
@@ -59,6 +60,7 @@ const CompanyProfileSchema: Schema = new Schema(
             instagram: { type: String, required: false },
         },
         employeeCount: { type: Number, required: false, min: 0 },
+        workplaceImages: { type: [String], required: false }, 
         status: { type: String, required: true, enum: Object.values(CompanyProfileStatus), default: CompanyProfileStatus.PENDING },
     },
     {

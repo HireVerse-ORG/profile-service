@@ -13,6 +13,9 @@ router.post("/", allowedRoles("company"), controller.createProfile);
 router.put("/", allowedRoles("company"), controller.updateProfile);
 router.get("/", allowedRoles("company"), controller.getProfile);
 
+router.put("/workplace-image", allowedRoles("company"), controller.addWorksplaceImage);
+router.delete("/workplace-image", allowedRoles("company"), controller.removeWorksplaceImage);
+
 router.get("/companyId-exist/:companyId", controller.checkCompanyIdExist);
 
 router.put("/:companyId/accept", allowedRoles("admin"), controller.acceptCompany);

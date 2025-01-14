@@ -25,6 +25,7 @@ export interface CompanyProfileDTO {
     };
     employeeCount: number; 
     status: CompanyProfileStatus; 
+    workplaceImages: string[]; 
     createdAt: Date;
     updatedAt: Date;
 }

@@ -102,6 +102,39 @@ export class CompanyProfileService implements ICompanyProfileService {
         });
     }
 
+    async addWorkplaceImage(image: string, userId: string): Promise<boolean> {
+        const profile = await this.companyProfileRepo.findOne({userId});
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+
+        if(!profile.workplaceImages.includes(image)){
+            profile.workplaceImages.push(image);
+            await profile.save();
+            return true;
+        }
+
+        return false;
+    }
+
+    async removeWorkplaceImage(image: string, userId: string): Promise<boolean> {
+        const profile = await this.companyProfileRepo.findOne({userId});
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+    
+        const imageIndex = profile.workplaceImages.indexOf(image);
+    
+        if (imageIndex === -1) {
+            return false;
+        }
+    
+        profile.workplaceImages.splice(imageIndex, 1);
+    
+        await profile.save(); 
+        return true; 
+    }
+
     private async generateUniqueCompanyId(companyName: string): Promise<string> {
         const baseUsername = slugify(companyName, {
             lower: true,

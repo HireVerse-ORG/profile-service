@@ -89,7 +89,7 @@ export class CompanyProfileController extends BaseController {
     });
 
     /**
-     * @route GET /api/profile/companyId-exist/:companyId?exclude=userid
+     * @route GET /api/profile/company/companyId-exist/:companyId?exclude=userid
      * @scope Public
     **/
     public checkCompanyIdExist = asyncWrapper(async (req: AuthRequest, res: Response) => {
@@ -106,7 +106,30 @@ export class CompanyProfileController extends BaseController {
     });
 
     /**
-     * @route PUT /api/profile/:companyId/accept
+     * @route PUT /api/profile/company/workplace-image
+     * @scope Company
+    **/
+    public addWorksplaceImage = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const userId = req.payload!.userId;
+        const { image } = req.body;
+        await this.companyProfileService.addWorkplaceImage(image, userId);
+        res.status(200).json({ message: "Worksplace image added sucesfully" });
+    });
+
+    /**
+     * @route DELETE /api/profile/company/workplace-image
+     * @scope Company
+    **/
+    public removeWorksplaceImage = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const userId = req.payload!.userId;
+        const { image } = req.body;
+        await this.companyProfileService.removeWorkplaceImage(image, userId);
+        res.status(200).json({ message: "Worksplace image removed sucesfully" });
+    });
+
+    // Admin Controllers
+    /**
+     * @route PUT /api/profile/company:companyId/accept
      * @scope Admin
     **/
     public acceptCompany = asyncWrapper(async (req: AuthRequest, res: Response) => {
@@ -117,7 +140,7 @@ export class CompanyProfileController extends BaseController {
     });
 
     /**
-     * @route PUT /api/profile/:companyId/reject
+     * @route PUT /api/profile/company:companyId/reject
      * @scope Admin
     **/
     public rejectCompany = asyncWrapper(async (req: AuthRequest, res: Response) => {
