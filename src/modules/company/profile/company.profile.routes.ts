@@ -14,6 +14,10 @@ router.put("/", allowedRoles("company"), controller.updateProfile);
 router.get("/", allowedRoles("company"), controller.getProfile);
 
 router.get("/companyId-exist/:companyId", controller.checkCompanyIdExist);
+
+router.put("/:companyId/accept", allowedRoles("admin"), controller.acceptCompany);
+router.put("/:companyId/reject", allowedRoles("admin"), controller.rejectCompany);
+
 router.get("/:companyId", controller.getProfileByCompanyId);
 
 export const companyProfileRoutes = router;

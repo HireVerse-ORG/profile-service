@@ -17,9 +17,9 @@ export class CompanyProfileController extends BaseController {
     **/
     public createProfile = asyncWrapper(async (req: AuthRequest, res: Response) => {
         const userId = req.payload!.userId;
-        const {name, companyType, email, industry, 
+        const { name, companyType, email, industry,
             phone, bio, employeeCount, founded, image,
-            location, socialLinks, website} = req.body as CreateCompanyProfileDTO;
+            location, socialLinks, website } = req.body as CreateCompanyProfileDTO;
 
         if (!name || !industry || !companyType || !email || !phone) {
             return res.status(400).json({
@@ -27,8 +27,10 @@ export class CompanyProfileController extends BaseController {
             });
         }
 
-        const profile = await this.companyProfileService.createProfile({userId, name, companyType, email, industry,
-             phone, bio, employeeCount, founded, image, location, socialLinks, website});
+        const profile = await this.companyProfileService.createProfile({
+            userId, name, companyType, email, industry,
+            phone, bio, employeeCount, founded, image, location, socialLinks, website
+        });
 
         res.status(201).json({
             message: "Company profile created successfully.",
@@ -41,10 +43,15 @@ export class CompanyProfileController extends BaseController {
      * @scope Company
     **/
     public updateProfile = asyncWrapper(async (req: AuthRequest, res: Response) => {
-        const data: UpdateCompanyProfileDTO = req.body;
+        const { name, companyType, email, industry,
+            phone, bio, employeeCount, founded, image,
+            location, socialLinks, website } = req.body as UpdateCompanyProfileDTO;
         const userid = req.payload!.userId;
 
-        const profile = await this.companyProfileService.updateProfileByUserId( userid,data);
+        const profile = await this.companyProfileService.updateProfileByUserId(userid, {
+            name, companyType, email, industry,
+            phone, bio, employeeCount, founded, image, location, socialLinks, website
+        });
 
         res.status(200).json({
             message: "Company profile updated successfully.",
@@ -61,7 +68,7 @@ export class CompanyProfileController extends BaseController {
 
         const profile = await this.companyProfileService.getProfileByUserId(userid);
 
-        if(!profile){
+        if (!profile) {
             return res.status(404).json("Profile not found");
         }
         res.status(200).json(profile);
@@ -72,10 +79,10 @@ export class CompanyProfileController extends BaseController {
      * @scope Public
     **/
     public getProfileByCompanyId = asyncWrapper(async (req: AuthRequest, res: Response) => {
-        const {companyId} = req.params
+        const { companyId } = req.params
         const profile = await this.companyProfileService.getProfileByCompanyId(companyId);
 
-        if(!profile){
+        if (!profile) {
             return res.status(404).json("Profile not found");
         }
         res.status(200).json(profile);
@@ -86,16 +93,37 @@ export class CompanyProfileController extends BaseController {
      * @scope Public
     **/
     public checkCompanyIdExist = asyncWrapper(async (req: AuthRequest, res: Response) => {
-        const {companyId} = req.params
-        const {exclude} = req.query;
+        const { companyId } = req.params
+        const { exclude } = req.query;
         let exist = false;
 
-        if(exclude){
+        if (exclude) {
             exist = await this.companyProfileService.profileExist(companyId, exclude.toString());
         } else {
             exist = await this.companyProfileService.profileExist(companyId);
-        } 
-        return res.json({exist})
+        }
+        return res.json({ exist })
+    });
+
+    /**
+     * @route PUT /api/profile/:companyId/accept
+     * @scope Admin
+    **/
+    public acceptCompany = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const { companyId } = req.params
+        console.log(companyId);
+        await this.companyProfileService.acceptProfile(companyId);
+        res.status(200).json({ message: "Profile accepted successfully" });
+    });
+
+    /**
+     * @route PUT /api/profile/:companyId/reject
+     * @scope Admin
+    **/
+    public rejectCompany = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const { companyId } = req.params
+        await this.companyProfileService.rejectProfile(companyId);
+        res.status(200).json({ message: "Profile accepted successfully" });
     });
 
 }

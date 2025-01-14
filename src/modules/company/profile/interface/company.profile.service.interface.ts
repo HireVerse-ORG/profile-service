@@ -7,4 +7,6 @@ export interface ICompanyProfileService {
     getProfileByUserId(id: string): Promise<CompanyProfileDTO | null>;
     getProfileByCompanyId(companyId: string): Promise<CompanyProfileDTO | null>;
     profileExist(companyId: string, excludedUserId?: string): Promise<boolean>;
+    acceptProfile(companyId: string): Promise<void>;
+    rejectProfile(companyId: string): Promise<void>;
 }

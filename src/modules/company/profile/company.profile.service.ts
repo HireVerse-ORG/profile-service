@@ -4,7 +4,7 @@ import { ICompanyProfileRepository } from "./interface/company.profile.repositor
 import { ICompanyProfileService } from "./interface/company.profile.service.interface";
 import { CreateCompanyProfileDTO, CompanyProfileDTO, UpdateCompanyProfileDTO } from "../dto/company.profile.dto";
 import slugify from "slugify";
-import { ICompanyProfile } from "./company.profile.entity";
+import { CompanyProfileStatus, ICompanyProfile } from "./company.profile.entity";
 import { FilterQuery, isValidObjectId } from "mongoose";
 import { BadRequestError, NotFoundError } from "@hireverse/service-common/dist/app.errors";
 
@@ -70,6 +70,38 @@ export class CompanyProfileService implements ICompanyProfileService {
         return !!existingProfile;
     }
 
+    async acceptProfile(companyId: string): Promise<void> {
+        const profile = await this.getProfileByCompanyId(companyId);
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+        
+        
+        if (profile.status === CompanyProfileStatus.VERIFIED) {
+            throw new BadRequestError("Profile is already verified");
+        }
+    
+        await this.companyProfileRepo.update(profile.id, {
+            status: CompanyProfileStatus.VERIFIED,
+        });
+    }
+
+    async rejectProfile(companyId: string): Promise<void> {
+        const profile = await this.getProfileByCompanyId(companyId);
+    
+        if (!profile) {
+            throw new NotFoundError("Profile not found");
+        }
+    
+        if (profile.status === CompanyProfileStatus.REJECTED) {
+            throw new BadRequestError("Profile is rejected");
+        }
+    
+        await this.companyProfileRepo.update(profile.id, {
+            status: CompanyProfileStatus.REJECTED,
+        });
+    }
+
     private async generateUniqueCompanyId(companyName: string): Promise<string> {
         const baseUsername = slugify(companyName, {
             lower: true,
@@ -77,7 +109,7 @@ export class CompanyProfileService implements ICompanyProfileService {
             replacement: "-",
         });
 
-        let uniqueId = `${baseUsername}-${Math.floor(1000 + Math.random() * 9000)}`;
+        let uniqueId = `${baseUsername}`;
 
         while (await this.companyProfileRepo.isCompanyIdExist(uniqueId)) {
             uniqueId = `${baseUsername}-${Math.floor(1000 + Math.random() * 9000)}`;

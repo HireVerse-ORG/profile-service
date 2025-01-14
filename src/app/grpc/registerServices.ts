@@ -1,9 +1,9 @@
 import * as grpc from '@grpc/grpc-js';
 import { logger } from '../../core/utils/logger';
-import { seekerProfileService } from './services';
+import { companyProfileService, seekerProfileService } from './services';
 
 const registerServices = (server: grpc.Server) => {
-    const services = [seekerProfileService]
+    const services = [seekerProfileService, companyProfileService]
 
     services.forEach(({ name, serviceDefinition, implementation }) => {
         server.addService(serviceDefinition, implementation);
