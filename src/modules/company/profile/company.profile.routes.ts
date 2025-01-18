@@ -12,7 +12,7 @@ const router = Router();
 router.post("/", allowedRoles("company"), controller.createProfile);
 router.put("/", allowedRoles("company"), controller.updateProfile);
 router.get("/", allowedRoles("company"), controller.getProfile);
-router.get("/list", controller.getProfile);
+router.get("/list", controller.listCompanies);
 
 router.put("/workplace-image", allowedRoles("company"), controller.addWorksplaceImage);
 router.delete("/workplace-image", allowedRoles("company"), controller.removeWorksplaceImage);

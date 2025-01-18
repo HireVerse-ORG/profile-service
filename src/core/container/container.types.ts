@@ -8,6 +8,10 @@ export default  {
     SeekerProfileGrpcController: Symbol('SeekerProfileGrpcController'),
     SeekerProfileService: Symbol('SeekerProfileService'),
     SeekerProfileRepository: Symbol('SeekerProfileRepository'),
+    // experience
+    SeekerExperienceController: Symbol('SeekerExperienceController'),
+    SeekerExperienceService: Symbol('SeekerExperienceService'),
+    SeekerExperienceRepository: Symbol('SeekerExperienceRepository'),
     // education
     SeekerEducationController: Symbol('SeekerEducationController'),
     SeekerEducationService: Symbol('SeekerEducationService'),
