@@ -7,6 +7,8 @@ import slugify from "slugify";
 import { CompanyProfileStatus, ICompanyProfile } from "./company.profile.entity";
 import { FilterQuery, isValidObjectId } from "mongoose";
 import { BadRequestError, NotFoundError } from "@hireverse/service-common/dist/app.errors";
+import { IPaginationResponse } from "@hireverse/service-common/dist/repository";
+import { querySanitizer } from "@hireverse/service-common/dist/utils";
 
 @injectable()
 export class CompanyProfileService implements ICompanyProfileService {
@@ -75,12 +77,12 @@ export class CompanyProfileService implements ICompanyProfileService {
         if (!profile) {
             throw new NotFoundError("Profile not found");
         }
-        
-        
+
+
         if (profile.status === CompanyProfileStatus.VERIFIED) {
             throw new BadRequestError("Profile is already verified");
         }
-    
+
         await this.companyProfileRepo.update(profile.id, {
             status: CompanyProfileStatus.VERIFIED,
         });
@@ -88,27 +90,27 @@ export class CompanyProfileService implements ICompanyProfileService {
 
     async rejectProfile(companyId: string): Promise<void> {
         const profile = await this.getProfileByCompanyId(companyId);
-    
+
         if (!profile) {
             throw new NotFoundError("Profile not found");
         }
-    
+
         if (profile.status === CompanyProfileStatus.REJECTED) {
             throw new BadRequestError("Profile is rejected");
         }
-    
+
         await this.companyProfileRepo.update(profile.id, {
             status: CompanyProfileStatus.REJECTED,
         });
     }
 
     async addWorkplaceImage(image: string, userId: string): Promise<boolean> {
-        const profile = await this.companyProfileRepo.findOne({userId});
+        const profile = await this.companyProfileRepo.findOne({ userId });
         if (!profile) {
             throw new NotFoundError("Profile not found");
         }
 
-        if(!profile.workplaceImages.includes(image)){
+        if (!profile.workplaceImages.includes(image)) {
             profile.workplaceImages.push(image);
             await profile.save();
             return true;
@@ -117,22 +119,39 @@ export class CompanyProfileService implements ICompanyProfileService {
         return false;
     }
 
+    async listCompanies(page: number, limit: number, status?: CompanyProfileStatus, query?: string): Promise<IPaginationResponse<CompanyProfileDTO>> {
+        const filter: FilterQuery<ICompanyProfile> = {};
+        if (status) {
+            filter.status = status;
+        }
+
+        if (query) {
+            query = querySanitizer(query);
+            filter.$or = [
+                { name: { $regex: query, $options: 'i' } },
+                { email: { $regex: query, $options: 'i' } },
+            ];
+        }
+        const profiles = await this.companyProfileRepo.paginate(filter, page, limit)
+        return profiles;
+    }
+
     async removeWorkplaceImage(image: string, userId: string): Promise<boolean> {
-        const profile = await this.companyProfileRepo.findOne({userId});
+        const profile = await this.companyProfileRepo.findOne({ userId });
         if (!profile) {
             throw new NotFoundError("Profile not found");
         }
-    
+
         const imageIndex = profile.workplaceImages.indexOf(image);
-    
+
         if (imageIndex === -1) {
             return false;
         }
-    
+
         profile.workplaceImages.splice(imageIndex, 1);
-    
-        await profile.save(); 
-        return true; 
+
+        await profile.save();
+        return true;
     }
 
     private async generateUniqueCompanyId(companyName: string): Promise<string> {

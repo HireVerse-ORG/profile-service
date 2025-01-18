@@ -12,12 +12,15 @@ const router = Router();
 router.post("/", allowedRoles("company"), controller.createProfile);
 router.put("/", allowedRoles("company"), controller.updateProfile);
 router.get("/", allowedRoles("company"), controller.getProfile);
+router.get("/list", controller.getProfile);
 
 router.put("/workplace-image", allowedRoles("company"), controller.addWorksplaceImage);
 router.delete("/workplace-image", allowedRoles("company"), controller.removeWorksplaceImage);
 
 router.get("/companyId-exist/:companyId", controller.checkCompanyIdExist);
 
+// admin
+router.get("/admin/list", allowedRoles("admin"), controller.listForAdmin);
 router.put("/:companyId/accept", allowedRoles("admin"), controller.acceptCompany);
 router.put("/:companyId/reject", allowedRoles("admin"), controller.rejectCompany);
 

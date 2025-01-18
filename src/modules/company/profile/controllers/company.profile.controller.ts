@@ -6,6 +6,7 @@ import asyncWrapper from '@hireverse/service-common/dist/utils/asyncWrapper';
 import { BaseController } from "../../../../core/base.controller";
 import { ICompanyProfileService } from "../interface/company.profile.service.interface";
 import { CompanyProfileDTO, CreateCompanyProfileDTO, UpdateCompanyProfileDTO } from "../../dto/company.profile.dto";
+import { CompanyProfileStatus } from "../company.profile.entity";
 
 @injectable()
 export class CompanyProfileController extends BaseController {
@@ -76,7 +77,7 @@ export class CompanyProfileController extends BaseController {
 
     /**
      * @route GET /api/profile/company/:companyId
-     * @scope Public
+     * @scope Company
     **/
     public getProfileByCompanyId = asyncWrapper(async (req: AuthRequest, res: Response) => {
         const { companyId } = req.params
@@ -86,6 +87,18 @@ export class CompanyProfileController extends BaseController {
             return res.status(404).json("Profile not found");
         }
         res.status(200).json(profile);
+    });
+
+    /**
+     * @route GET /api/profile/company/list?query=""
+     * @scope Public
+    **/
+    public listCompanies = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        const query = req.query.query as string || undefined;
+        const companies = await this.companyProfileService.listCompanies(page, limit, CompanyProfileStatus.VERIFIED, query);
+        res.status(200).json(companies);
     });
 
     /**
@@ -129,12 +142,35 @@ export class CompanyProfileController extends BaseController {
 
     // Admin Controllers
     /**
+     * @route PUT /api/profile/company/admin/list?status="pending/rejected/verified"&page=1&limit=10
+     * @scope Admin
+    **/
+    public listForAdmin = asyncWrapper(async (req: AuthRequest, res: Response) => {
+        const { status } = req.query;
+        const page = Number(req.query.page) || 1;
+        const limit = Number(req.query.limit) || 10;
+        let validStatus: CompanyProfileStatus | undefined;
+        if (status) {
+            if (status === "pending") {
+                validStatus = CompanyProfileStatus.PENDING;
+            } else if (status === "rejected") {
+                validStatus = CompanyProfileStatus.REJECTED;
+            } else if (status === "verified") {
+                validStatus = CompanyProfileStatus.VERIFIED;
+            } else {
+                validStatus
+            }
+        }
+        const companies = await this.companyProfileService.listCompanies(page, limit, validStatus)
+        res.status(200).json(companies);
+    });
+
+    /**
      * @route PUT /api/profile/company:companyId/accept
      * @scope Admin
     **/
     public acceptCompany = asyncWrapper(async (req: AuthRequest, res: Response) => {
         const { companyId } = req.params
-        console.log(companyId);
         await this.companyProfileService.acceptProfile(companyId);
         res.status(200).json({ message: "Profile accepted successfully" });
     });
