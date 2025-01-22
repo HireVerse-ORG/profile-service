@@ -62,6 +62,29 @@ export class CompanyProfileService implements ICompanyProfileService {
         return profile
     }
 
+    async getCompanyProfilesByLocation(location: { city: string, country: string, place?: string }): Promise<CompanyProfileDTO[]> {
+        const query: FilterQuery<ICompanyProfile> = {};
+        if (location.city && location.country) {
+            query["location.city"] = { $regex: location.city, $options: "i" }; 
+            query["location.country"] = { $regex: location.country, $options: "i" };
+        } else if (!location.city && location.country) {
+            query["location.country"] = { $regex: location.country, $options: "i" };
+        } else if (location.city && !location.country) {
+            query["location.city"] = { $regex: location.city, $options: "i" };
+        } else  if (location.place) {
+            query["$or"] = [
+                { "location.city": { $regex: location.place, $options: "i" } },
+                { "location.country": { $regex: location.place, $options: "i" } }
+            ];
+        } else {
+            return [];
+        }
+    
+        const profiles = await this.companyProfileRepo.findAll(query);
+        
+        return profiles;
+    }
+
     async profileExist(companyId: string, excludedUserId?: string): Promise<boolean> {
         let query: FilterQuery<ICompanyProfile> = { companyId };
 

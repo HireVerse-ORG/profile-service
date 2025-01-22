@@ -10,6 +10,7 @@ export class CompanyProfileGrpcController extends BaseController {
     public getProcedures() {
         return {
             GetCompanyProfileByUserId: this.getProfileByUserId.bind(this),
+            GetCompanyProfilesByLocation: this.getCompanyProfilesByLocation.bind(this),
         }
     }
 
@@ -17,6 +18,12 @@ export class CompanyProfileGrpcController extends BaseController {
         let { userId } = call.request;
         const profile = await this.companyProfileService.getProfileByUserId(userId);
         callback(null, { profile})
+    })
+
+    private getCompanyProfilesByLocation = grpcWrapper(async (call: any, callback: any) => {
+        let { location, place } = call.request;
+        const profiles = await this.companyProfileService.getCompanyProfilesByLocation({...location, place});
+        callback(null, { profiles })
     })
 
 }
