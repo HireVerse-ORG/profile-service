@@ -10,6 +10,7 @@ export class SeekerProfileGrpcController extends BaseController {
     public getProcedures() {
         return {
             CreateSeekerProfile: this.createProfile.bind(this),
+            GetSeekerProfileByUserId: this.getProfileByUserId.bind(this),
         }
     }
 
@@ -23,5 +24,11 @@ export class SeekerProfileGrpcController extends BaseController {
         await this.seekerProfileService.createProfile({profileName, userId, profileUsername})
 
         callback(null, {message: "Profile created"})
+    })
+
+    private getProfileByUserId = grpcWrapper(async (call: any, callback: any) => {        
+        let { userId } = call.request;
+        const profile = await this.seekerProfileService.getProfileByUserId(userId);
+        callback(null, {profile})
     })
 }

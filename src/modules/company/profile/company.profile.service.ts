@@ -85,6 +85,14 @@ export class CompanyProfileService implements ICompanyProfileService {
         return profiles;
     }
 
+    async getCompanyProfilesByIdList(ids: string[]): Promise<CompanyProfileDTO[]> {
+        if (ids.length === 0) {
+            return []; 
+        }
+        const profiles = await this.companyProfileRepo.findAll({ _id: { $in: ids } });
+        return profiles;
+    }
+
     async profileExist(companyId: string, excludedUserId?: string): Promise<boolean> {
         let query: FilterQuery<ICompanyProfile> = { companyId };
 

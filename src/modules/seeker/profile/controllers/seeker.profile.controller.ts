@@ -33,6 +33,7 @@ export class SeekerProfileController extends BaseController {
         const { field } = req.query;
         const userid = req.payload!.userId;
         const profile = await this.seekerProfileService.getProfileByUserId(userid);
+        
         if (field === "bio") {
             return res.json(profile?.bio);
         } else if (field === "username") {

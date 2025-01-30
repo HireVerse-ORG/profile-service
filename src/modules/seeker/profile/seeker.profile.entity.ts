@@ -13,7 +13,7 @@ export interface ISeekerProfile extends Document {
     bio: string;
     profileUsername: string;
     image: string;
-    coverImage: string;
+    coverImage: string | null;
     skills: string[];
     createdAt: Date;
     updatedAt: Date;
