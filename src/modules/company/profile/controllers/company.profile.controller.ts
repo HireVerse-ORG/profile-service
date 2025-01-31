@@ -5,7 +5,7 @@ import { AuthRequest } from '@hireverse/service-common/dist/token/user/userReque
 import asyncWrapper from '@hireverse/service-common/dist/utils/asyncWrapper';
 import { BaseController } from "../../../../core/base.controller";
 import { ICompanyProfileService } from "../interface/company.profile.service.interface";
-import { CompanyProfileDTO, CreateCompanyProfileDTO, UpdateCompanyProfileDTO } from "../../dto/company.profile.dto";
+import { CompanyProfileDTO, CompanySearchFilters, CreateCompanyProfileDTO, UpdateCompanyProfileDTO } from "../../dto/company.profile.dto";
 import { CompanyProfileStatus } from "../company.profile.entity";
 
 @injectable()
@@ -90,16 +90,43 @@ export class CompanyProfileController extends BaseController {
     });
 
     /**
-     * @route GET /api/profile/company/list?query=""
+     * @route GET /api/profile/company/list?query=""&companyTypes=""&industries=""&country=""&city=""&place=""
      * @scope Public
     **/
     public listCompanies = asyncWrapper(async (req: AuthRequest, res: Response) => {
         const page = Number(req.query.page) || 1;
         const limit = Number(req.query.limit) || 10;
         const query = req.query.query as string || undefined;
-        const companies = await this.companyProfileService.listCompanies(page, limit, CompanyProfileStatus.VERIFIED, query);
+
+        const companyTypes = req.query.companyTypes ? (req.query.companyTypes as string).split(',') : [];
+        const industries = req.query.industries ? (req.query.industries as string).split(',') : [];
+
+        let location;
+
+        if (req.query.country || req.query.city) {
+            location = {
+                country: req.query.country as string || undefined,
+                city: req.query.city as string || undefined,
+            };
+        } else if (req.query.place) {
+            location = req.query.place as string;
+        }
+
+        const filters: CompanySearchFilters = {
+            query,
+            companyTypes,
+            industries,
+            location,
+            status: CompanyProfileStatus.VERIFIED
+        };
+
+        // Call the service method with filters
+        const companies = await this.companyProfileService.listCompanies(page, limit, filters);
+
         res.status(200).json(companies);
     });
+
+
 
     /**
      * @route GET /api/profile/company/companyId-exist/:companyId?exclude=userid
@@ -161,7 +188,7 @@ export class CompanyProfileController extends BaseController {
                 validStatus
             }
         }
-        const companies = await this.companyProfileService.listCompanies(page, limit, validStatus)
+        const companies = await this.companyProfileService.listCompanies(page, limit, { status: validStatus })
         res.status(200).json(companies);
     });
 

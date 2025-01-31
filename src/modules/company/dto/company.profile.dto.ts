@@ -76,3 +76,14 @@ export interface UpdateCompanyProfileDTO {
     };
     employeeCount?: number; 
 }
+
+export interface CompanySearchFilters {
+    status?: CompanyProfileStatus, 
+    query?: string
+    location?: {
+        country?: string;
+        city?: string;
+    } | string;
+    industries?: string[],
+    companyTypes?: string[]; 
+}

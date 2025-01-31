@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import containerTypes from "../../../core/container/container.types";
 import { ICompanyProfileRepository } from "./interface/company.profile.repository.interface";
 import { ICompanyProfileService } from "./interface/company.profile.service.interface";
-import { CreateCompanyProfileDTO, CompanyProfileDTO, UpdateCompanyProfileDTO } from "../dto/company.profile.dto";
+import { CreateCompanyProfileDTO, CompanyProfileDTO, UpdateCompanyProfileDTO, CompanySearchFilters } from "../dto/company.profile.dto";
 import slugify from "slugify";
 import { CompanyProfileStatus, ICompanyProfile } from "./company.profile.entity";
 import { FilterQuery, isValidObjectId } from "mongoose";
@@ -150,22 +150,54 @@ export class CompanyProfileService implements ICompanyProfileService {
         return false;
     }
 
-    async listCompanies(page: number, limit: number, status?: CompanyProfileStatus, query?: string): Promise<IPaginationResponse<CompanyProfileDTO>> {
-        const filter: FilterQuery<ICompanyProfile> = {};
-        if (status) {
-            filter.status = status;
-        }
-
+    async listCompanies(
+        page: number,
+        limit: number,
+        filter: CompanySearchFilters = {}
+    ): Promise<IPaginationResponse<CompanyProfileDTO>> {
+        const { query, status, companyTypes, industries, location } = filter;
+        const queryFilter: FilterQuery<ICompanyProfile> = {};
+    
         if (query) {
-            query = querySanitizer(query);
-            filter.$or = [
-                { name: { $regex: query, $options: 'i' } },
-                { email: { $regex: query, $options: 'i' } },
-            ];
+            const sanitizedQuery = querySanitizer(query);
+            queryFilter.name = { $regex: sanitizedQuery, $options: 'i' } 
         }
-        const profiles = await this.companyProfileRepo.paginate(filter, page, limit)
+    
+        if (status) {
+            queryFilter.status = status;
+        }
+    
+        if (companyTypes && companyTypes.length > 0) {
+            queryFilter.companyType = { $in: companyTypes };
+        }
+    
+        if (industries && industries.length > 0) {
+            queryFilter.industry = { $in: industries };
+        }
+    
+        if (location) {
+            if (typeof location === 'string') {
+                queryFilter["$or"] = [
+                    { "location.city": { $regex: location, $options: "i" } },
+                    { "location.country": { $regex: location, $options: "i" } }
+                ];
+            } else if (typeof location === 'object' && location.country && location.city) {
+                if (location.city && location.country) {
+                    queryFilter["location.city"] = { $regex: location.city, $options: "i" }; 
+                    queryFilter["location.country"] = { $regex: location.country, $options: "i" };
+                } else if (!location.city && location.country) {
+                    queryFilter["location.country"] = { $regex: location.country, $options: "i" };
+                } else if (location.city && !location.country) {
+                    queryFilter["location.city"] = { $regex: location.city, $options: "i" };
+                } 
+            }
+        }
+    
+        const profiles = await this.companyProfileRepo.paginate(queryFilter, page, limit);
+    
         return profiles;
     }
+    
 
     async removeWorkplaceImage(image: string, userId: string): Promise<boolean> {
         const profile = await this.companyProfileRepo.findOne({ userId });
