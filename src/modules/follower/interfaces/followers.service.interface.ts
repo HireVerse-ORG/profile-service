@@ -1,5 +1,5 @@
 import { IPaginationResponse } from "@hireverse/service-common/dist/repository";
-import { FollowersDto, FollowRequestDto, UnfollowRequestDto } from "../dto/followers.dto";
+import { FindFollowerDTO, FindFollowersFilter, FollowersDto, FollowRequestDto, UnfollowRequestDto } from "../dto/followers.dto";
 import { FollowRequestStatus } from "../followers.entity";
 
 export interface IFollowersService {
@@ -7,7 +7,7 @@ export interface IFollowersService {
   unfollow(dto: UnfollowRequestDto): Promise<void>;
   isFollowing(followerId: string, followedUserId: string): Promise<boolean>;
   getFollowDetails(followerId: string, followedUserId: string): Promise<FollowersDto | null>;
-  getFollowers(followerId: string, page: number, limit: number, status?: FollowRequestStatus): Promise<IPaginationResponse<FollowersDto>>;
+  getFollowers(filter: FindFollowersFilter): Promise<IPaginationResponse<FindFollowerDTO>>;
   getFollowRequests(followedUserId: string, page: number, limit: number): Promise<IPaginationResponse<FollowersDto>>;
   getUserFollowerCount(followedUserId: string): Promise<number>;
   getUserFollowRequestCount(followedUserId: string): Promise<number>;

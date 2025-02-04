@@ -15,7 +15,7 @@ router.get('/follow-request/count', allowedRoles("company", "seeker"), controlle
 router.put('/follow-request/:id/accept', allowedRoles("company", "seeker"), controller.acceptRequest);
 router.put('/follow-request/:id/reject', allowedRoles("company", "seeker"), controller.rejectRequest);
 
-router.get('/followers/:followerId/list', allowedRoles("company", "seeker"), controller.getFollowersList);
+router.get('/followers/:userId/list', allowedRoles("company", "seeker"), controller.getFollowersList);
 router.get('/followers/:userId/count', allowedRoles("company", "seeker"), controller.getFollowersCount);
 router.get('/follow-details/:followedUserId', allowedRoles("company", "seeker"), controller.getFollowDetails);
 router.delete('/follower/:followedUserId', allowedRoles("company", "seeker"), controller.removeFollower);

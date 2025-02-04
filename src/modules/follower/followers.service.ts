@@ -2,7 +2,7 @@ import { inject, injectable } from "inversify";
 import TYPES from "../../core/container/container.types";
 import { IFollowersService } from "./interfaces/followers.service.interface";
 import { IFollowersRepository } from "./interfaces/followers.repository.interface";
-import { FollowRequestDto, FollowersDto, UnfollowRequestDto } from "./dto/followers.dto";
+import { FindFollowerDTO, FindFollowersFilter, FollowRequestDto, FollowersDto, UnfollowRequestDto } from "./dto/followers.dto";
 import { FollowRequestStatus, IFollowers } from "./followers.entity";
 import { BadRequestError } from "@hireverse/service-common/dist/app.errors";
 import { IPaginationResponse } from "@hireverse/service-common/dist/repository";
@@ -43,16 +43,9 @@ export class FollowersService implements IFollowersService {
         await this.repo.delete(following.id);
     }
 
-    async getFollowers(followerId: string, page: number, limit: number, status?: FollowRequestStatus): Promise<IPaginationResponse<FollowersDto>> {
-        const filterQuey: FilterQuery<IFollowers> = { followerId }
-
-        if (status) {
-            filterQuey.requestStatus = status;
-        }
-
-        const followers = await this.repo.paginate(filterQuey, page, limit, {sort: {createdAt: -1}});
-
-        return { ...followers, data: followers.data.map(this.toDTO) };
+    async getFollowers(filter: FindFollowersFilter): Promise<IPaginationResponse<FindFollowerDTO>> {
+        const followers = await this.repo.findPaginatedFollowers(filter);
+        return followers;
     }
 
     async getFollowRequests(followedUserId: string, page: number, limit: number): Promise<IPaginationResponse<FollowersDto>> {

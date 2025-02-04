@@ -43,44 +43,22 @@ export class FollowersController {
     * @scope Private
     **/
     public getFollowersList = asyncWrapper(async (req: AuthRequest, res: Response) => {
-        const followerId = req.params.followerId;
+        const userId = req.payload?.userId!;
+        const followedUserId = req.params.userId;
         const page = req.query.page ? parseInt(req.query.page as string, 10) : 1;
         const limit = req.query.limit ? parseInt(req.query.limit as string, 10) : 10;
-        const status = req.query.status ? req.query.status as FollowRequestStatus : undefined;
+        const query = req.query.query ? req.query.query as string : undefined;
 
-        const followers = await this.followersService.getFollowers(followerId, page, limit, status);
+        const followers = await this.followersService.getFollowers({
+            followerId: userId,
+            followedUserId, 
+            checkMutual: userId !== followedUserId,
+            page, 
+            limit,
+            query 
+        });
 
-        const followersWithProfiles = await Promise.all(
-            followers.data.map(async (data) => {
-                let followedUserProfile = null;
-                if (data.followedUserType === "seeker") {
-                    const profile = await this.seekerProfileService.getProfileByUserId(data.followedUserId);
-                    if (profile) {
-                        followedUserProfile = {
-                            id: profile.id,
-                            name: profile.profileName,
-                            type: data.followedUserType,
-                            publicId: profile.profileUsername,
-                            image: profile.image,
-                        }
-                    }
-                } else if (data.followedUserType === "company") {
-                    const profile = await this.companyProfileService.getProfileByUserId(data.followedUserId);
-                    if (profile) {
-                        followedUserProfile = {
-                            id: profile.id,
-                            name: profile.name,
-                            type: data.followedUserType,
-                            publicId: profile.companyId,
-                            image: profile.image,
-                        }
-                    }
-                }
-                return { ...data, followedUserProfile };
-            })
-        );
-
-        return res.json({ ...followers, data: followersWithProfiles })
+        return res.json(followers)
     });
 
     /**

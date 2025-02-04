@@ -23,3 +23,23 @@ export interface FollowersDto {
     createdAt: Date;
     updatedAt: Date;
 }
+
+export interface FindFollowersFilter {
+    followedUserId: string;
+    followerId: string; 
+    checkMutual: boolean;
+    query?:string;
+    page: number; 
+    limit: number; 
+}
+
+export interface FindFollowerDTO {
+    followId: string;
+    name: string,
+    title: string,
+    image: string,
+    userType: string,
+    userId: string,
+    publicId: string,
+    isMutual: string, 
+}
