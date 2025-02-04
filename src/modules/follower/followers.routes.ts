@@ -6,12 +6,18 @@ import { allowedRoles } from "@hireverse/service-common/dist/token/user/userMidd
 
 const controller = container.get<FollowersController>(TYPES.FollowersController);
 
-// base: /api/profile/followers
+// base: /api/profile
 const router = Router();
 
-router.get('/', allowedRoles("company", "seeker"), controller.getFollowers);
-router.get('/:userId/count', allowedRoles("company", "seeker"), controller.getFollowersCount);
-router.get('/isFollowing/:followedUserId', allowedRoles("company", "seeker"), controller.isFollowing);
-router.delete('/:followedUserId', allowedRoles("company", "seeker"), controller.removeFollower);
+router.post('/follow-request', allowedRoles("company", "seeker"), controller.sendFollowRequest);
+router.get('/follow-request', allowedRoles("company", "seeker"), controller.getMyFollowRequests);
+router.get('/follow-request/count', allowedRoles("company", "seeker"), controller.getFollowRequestCount);
+router.put('/follow-request/:id/accept', allowedRoles("company", "seeker"), controller.acceptRequest);
+router.put('/follow-request/:id/reject', allowedRoles("company", "seeker"), controller.rejectRequest);
+
+router.get('/followers/:followerId/list', allowedRoles("company", "seeker"), controller.getFollowersList);
+router.get('/followers/:userId/count', allowedRoles("company", "seeker"), controller.getFollowersCount);
+router.get('/follow-details/:followedUserId', allowedRoles("company", "seeker"), controller.getFollowDetails);
+router.delete('/follower/:followedUserId', allowedRoles("company", "seeker"), controller.removeFollower);
 
 export const followerRoutes = router;

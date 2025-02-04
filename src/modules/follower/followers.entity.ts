@@ -1,12 +1,19 @@
 import { UserRole } from '@hireverse/service-common/dist/token/user/userPayload';
 import mongoose, { Document, Schema } from 'mongoose';
 
+export enum FollowRequestStatus {
+    Pending = 'pending',
+    Accepted = 'accepted',
+    Rejected = 'rejected'
+}
+
 export interface IFollowers extends Document {
     id: string;
     followerId: string,
     followerUserType: UserRole;
     followedUserId: string;
     followedUserType: UserRole;
+    requestStatus: FollowRequestStatus;
     createdAt: Date;
     updatedAt: Date;
 }
@@ -28,6 +35,11 @@ const FollowersSchema: Schema = new Schema<IFollowers>(
         followedUserType: {
             type: String,
             required: true
+        },
+        requestStatus: {
+            type: String,
+            enum: Object.values(FollowRequestStatus),
+            default: FollowRequestStatus.Pending,
         },
     },
     {

@@ -1,4 +1,5 @@
 import { UserRole } from "@hireverse/service-common/dist/token/user/userPayload";
+import { FollowRequestStatus } from "../followers.entity";
 
 export interface FollowRequestDto {
     followerId: string,
@@ -18,6 +19,7 @@ export interface FollowersDto {
     followerUserType: UserRole;
     followedUserId: string;
     followedUserType: UserRole;
+    requestStatus: FollowRequestStatus;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -33,12 +33,6 @@ export default {
     FollowersService: Symbol('FollowersService'),
     FollowersRepository: Symbol('FollowersRepository'),
 
-    // followe request
-    FollowRequestController: Symbol('FollowRequestController'),
-    FollowRequestGrpcController: Symbol('FollowRequestGrpcController'),
-    FollowRequestService: Symbol('FollowRequestService'),
-    FollowRequestRepository: Symbol('FollowRequestRepository'),
-
     // external
     JobSkillService: Symbol('JobSkillService'),
 
