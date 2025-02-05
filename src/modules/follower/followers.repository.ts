@@ -140,7 +140,7 @@ export class FollowersRepository extends MongoBaseRepository<IFollowers> impleme
                                     $and: [
                                         { $eq: ["$followerId", "$$loggedInUserId"] },
                                         { $eq: ["$followedUserId", "$$potentialMutualId"] },
-                                        { $eq: ["$requestStatus", FollowRequestStatus.Accepted] }
+                                        { $in: ["$requestStatus", [FollowRequestStatus.Accepted, FollowRequestStatus.Pending]] }
                                     ]
                                 }
                             }

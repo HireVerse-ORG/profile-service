@@ -41,5 +41,5 @@ export interface FindFollowerDTO {
     userType: string,
     userId: string,
     publicId: string,
-    isMutual: string, 
+    isMutual: boolean, 
 }

@@ -52,7 +52,7 @@ export class FollowersController {
         const followers = await this.followersService.getFollowers({
             followerId: userId,
             followedUserId, 
-            checkMutual: userId !== followedUserId,
+            checkMutual: true,
             page, 
             limit,
             query 
