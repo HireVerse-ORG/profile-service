@@ -1,13 +1,13 @@
 import { inject, injectable } from "inversify";
-import TYPES from "../../core/container/container.types";
-import { IFollowersService } from "./interfaces/followers.service.interface";
+import TYPES from "../../../core/container/container.types";
+import { IFollowersService } from "../interfaces/followers.service.interface";
 import asyncWrapper from "@hireverse/service-common/dist/utils/asyncWrapper";
 import { AuthRequest } from "@hireverse/service-common/dist/token/user/userRequest";
 import { Response } from "express";
-import { FollowRequestStatus } from "./followers.entity";
-import { ISeekerProfileService } from "../seeker/profile/interface/seeker.profile.service.interface";
-import { ICompanyProfileService } from "../company/profile/interface/company.profile.service.interface";
-import { EventService } from "../../event/event.service";
+import { FollowRequestStatus } from "../followers.entity";
+import { ISeekerProfileService } from "../../seeker/profile/interface/seeker.profile.service.interface";
+import { ICompanyProfileService } from "../../company/profile/interface/company.profile.service.interface";
+import { EventService } from "../../../event/event.service";
 
 @injectable()
 export class FollowersController {

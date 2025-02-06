@@ -62,7 +62,7 @@ export class FollowersService implements IFollowersService {
     }
 
     async isFollowing(followerId: string, followedUserId: string): Promise<boolean> {
-        const isFOllowing = await this.repo.findOne({ followerId, followedUserId });
+        const isFOllowing = await this.repo.findOne({ followerId, followedUserId, requestStatus: FollowRequestStatus.Accepted });
         return !!isFOllowing;
     }
 

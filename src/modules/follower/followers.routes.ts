@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { container } from "../../core/container";
 import TYPES from "../../core/container/container.types";
-import { FollowersController } from "./followers.controller";
+import { FollowersController } from "./controllers/followers.controller";
 import { allowedRoles } from "@hireverse/service-common/dist/token/user/userMiddleware";
 
 const controller = container.get<FollowersController>(TYPES.FollowersController);
