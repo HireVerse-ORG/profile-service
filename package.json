@@ -12,8 +12,9 @@
   "description": "",
   "dependencies": {
     "@grpc/grpc-js": "^1.12.5",
-    "@hireverse/service-common": "^1.0.7",
-    "@hireverse/service-protos": "^1.0.3",
+    "@hireverse/kafka-communication": "^1.0.1",
+    "@hireverse/service-common": "^1.0.8",
+    "@hireverse/service-protos": "^1.0.4",
     "cors": "^2.8.5",
     "dotenv": "^16.4.7",
     "express": "^4.21.2",
