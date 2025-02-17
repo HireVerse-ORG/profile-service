@@ -7,7 +7,7 @@ import { Response } from "express";
 import { FollowRequestStatus } from "../followers.entity";
 import { ISeekerProfileService } from "../../seeker/profile/interface/seeker.profile.service.interface";
 import { ICompanyProfileService } from "../../company/profile/interface/company.profile.service.interface";
-import { EventService } from "../../../event/event.service";
+import { EventService } from "../../event/event.service";
 
 @injectable()
 export class FollowersController {

@@ -1,7 +1,7 @@
 import { injectable, inject } from "inversify";
-import TYPES from "../core/container/container.types";
+import TYPES from "../../core/container/container.types";
 import { kafka } from "@hireverse/kafka-communication";
-import { logger } from "../core/utils/logger";
+import { logger } from "../../core/utils/logger";
 import { FollowRequestAcceptedEvent, FollowRequestAcceptedMessage, FollowRequestedEvent, FollowRequestedMessage } from "@hireverse/kafka-communication/dist/events";
 
 @injectable()
