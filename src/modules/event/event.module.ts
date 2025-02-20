@@ -4,20 +4,28 @@ import TYPES from "../../core/container/container.types";
 import { KafkaConnect, KafkaConsumer, KafkaProducer } from "@hireverse/kafka-communication/dist/kafka";
 import { EventService } from "./event.service";
 import { EventController } from "./event.controller";
+import { logger } from "../../core/utils/logger";
 
 const kafkaConnect = new KafkaConnect({
     clientId: "profile-service",
     brokers: [process.env.KAFKA_SERVER!],
     retry: {
-        retries: 5, 
-        factor: 0.2,
+        retries: 10,              
+        initialRetryTime: 500,   
+        factor: 0.3,              
+        multiplier: 2,           
+        maxRetryTime: 60_000,    
+        restartOnFailure: async (error) => {
+            logger.error("Kafka connection failed:", error);
+            return true; 
+        },
     }
 })
 
-export const producer = new kafka.KafkaProducer(kafkaConnect, {allowAutoTopicCreation: process.env.NODE_ENV === "development"});
+export const producer = new kafka.KafkaProducer(kafkaConnect, {allowAutoTopicCreation: true});
 export const consumer = new kafka.KafkaConsumer(kafkaConnect, { 
     groupId: "profile-group", 
-    allowAutoTopicCreation: process.env.NODE_ENV === "development"
+    allowAutoTopicCreation: true
 });
 
 export function loadEventContainer(container: Container) {

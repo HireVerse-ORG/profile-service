@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-depl
+  namespace: hireverse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: profile
+  template:
+    metadata:
+      labels:
+        app: profile
+    spec:
+      containers:
+        - name: profile
+          image: hireverse/profile-server
+          env:
+            - name: DATABASE_URL
+              valueFrom:
+                secretKeyRef:
+                  name: profile-secret
+                  key: DATABASE_URL
+            - name: JWT_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: common-secret
+                  key: JWT_SECRET_KEY
+          envFrom:
+            - configMapRef:
+                name: common-config
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: profile-srv
+  namespace: hireverse
+spec:
+  selector:
+    app: profile
+  ports:
+    - name: express
+      protocol: TCP
+      port: 5004
+      targetPort: 5004
+    - name: grpc
+      protocol: TCP
+      port: 6004
+      targetPort: 6004
